@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+  
+  <definition name="home.page.template" template="/WEB-INF/views/jsp/unique-machines/templates/web_page_template.jsp">
+    <put-attribute name="title" value="" />
+    <put-attribute name="page_header_layout" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/page_header_layout.jsp" />
+    <put-attribute name="body_content" type="template" value="" />
+    <put-attribute name="page_footer_layout" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/page_footer_layout.jsp" />
+  </definition>
+    
+  <definition name="home" extends="home.page.template">
+	<put-attribute name="title" value="Unique Machines"></put-attribute>
+	<put-attribute name="body_content" value="/WEB-INF/views/jsp/unique-machines/pages/home.jsp" />
+  </definition>
+  
+  <definition name="machine" extends="home.page.template">
+	<put-attribute name="page_header_layout" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/page_header_layout_min.jsp" />
+	<put-attribute name="title" value="Unique Machines"></put-attribute>
+	<put-attribute name="body_content" value="/WEB-INF/views/jsp/unique-machines/pages/single-machine.jsp" />
+  </definition>
+  
+  <definition name="signin" extends="home.page.template">
+  	<put-attribute name="page_header_layout" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/page_header_layout_min.jsp" />
+	<put-attribute name="title" value="Unique Machines"></put-attribute>
+	<put-attribute name="body_content" value="/WEB-INF/views/jsp/unique-machines/pages/signin.jsp" />
+  </definition>
+  
+  <definition name="admin.home.page.template" template="/WEB-INF/views/jsp/unique-machines/templates/admin_dashboard_template.jsp">
+    <put-attribute name="title" value="" />
+    <put-attribute name="admin_dashboard_header" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/admin_dashboard_header.jsp" />
+    <put-attribute name="admin_dashboard_sidebar_left" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/admin_dashboard_sidebar_left.jsp" />
+    <put-attribute name="page_content" type="template" value="" />
+    <put-attribute name="admin_dashboard_sidebar_right" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/admin_dashboard_sidebar_right.jsp" />
+    <put-attribute name="admin_dashboard_footer" type="template" value="/WEB-INF/views/jsp/unique-machines/templates/admin_dashboard_footer.jsp" />
+  </definition>
+  
+  <definition name="dashboard" extends="admin.home.page.template">
+	<put-attribute name="title" value="Admin Home Page"></put-attribute>
+	<put-attribute name="page_content" value="/WEB-INF/views/jsp/unique-machines/pages/dashboard.jsp" />
+  </definition>
+  
+  
+</tiles-definitions>
