@@ -52,6 +52,15 @@ h6 {
 	font-weight: 400;
 }
 
+.list-group-item p{
+	line-height: 1.3em !important;
+	letter-spacing: 0px !important;
+}
+
+.list-group-item .badge{
+	background-color:black !important;
+}
+
 p {
 	margin: 0;
 	font-size: 0.95em;

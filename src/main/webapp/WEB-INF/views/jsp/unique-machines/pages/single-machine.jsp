@@ -98,7 +98,7 @@
 
 
 					<div class="middle-grid w3-agile"
-						style="margin: 50px 0; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; padding: 0.75rem 1rem; margin-bottom: 1rem; list-style: none;background-color: #e9e9e92b; border-radius: 0.25rem;">
+						style="margin: 50px 0; -ms-flex-wrap: wrap;margin-bottom: 1rem; list-style: none;border-radius: 0.25rem;">
 						<div class="car-condition"
 							style="border: 1px solid #ddd; padding: 20px 0;">
 							<h3 style="margin-bottom: 20px; padding-bottom: 20px; text-align: center; font-size: 30px; font-weight: 600;border-bottom: 3px solid #c7c3c2; text-transform: uppercase;">Features
@@ -154,20 +154,20 @@
 
 						</div>
 					</div>
-
-					<ul class="list-group single" style="max-width: 500px;margin: 33px 0;">
-
-						<li class="list-group-item d-flex justify-content-between align-items-center" style="">
-							<div class="col-md-12 col-sm-12 part" style="">
-								<strong><p style="font-size: 20px; text-align: center;">Parameter Values</p></strong>
-							</div>
-							
-							<div class="clearfix"></div>
-						</li>
-						<li class="list-group-item d-flex justify-content-between align-items-center">
+					
+					
+					<div class="middle-grid w3-agile" style="margin: 50px 0; -ms-flex-wrap: wrap;margin-bottom: 1rem; list-style: none;border-radius: 0.25rem;">
+						<div class="car-condition" style="border: 1px solid #ddd; padding: 20px 0;">
+							<h3 style="margin-bottom: 20px; padding-bottom: 20px; text-align: center; font-size: 30px; font-weight: 600;border-bottom: 3px solid #c7c3c2; text-transform: uppercase;">
+								Technical Specifications
+							</h3>
+					
+						<ul class="list-group single" style="width: 30%;margin: 0px 13px;display: inline-block;vertical-align: top;padding-left: 10px;">
+					
+							<li class="list-group-item d-flex justify-content-between align-items-center">
 						
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Air Pressure</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Air Pressure</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">0.5~0.8(MPa)</span></p></strong>
@@ -176,7 +176,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Air Consumption</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Air Consumption</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">30(L/min)</span></p></strong>
@@ -185,7 +185,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Input Voltage</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Input Voltage</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">3N~50Hz 380/220V</span></p></strong>
@@ -194,16 +194,23 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Input Power</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Input Power</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">3(Kw)</span></p></strong>
 							</div>
 							<div class="clearfix"></div>
 						</li>
+					
+					
+					</ul>
+					
+					
+					<ul class="list-group single" style="width: 30%;margin: 0px 13px;display: inline-block;vertical-align: top;padding-left: 10px;">
+					
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Saw Blade Diameter</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Saw Blade Diameter</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">$ 350</span></p></strong>
@@ -212,7 +219,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Spindle Rotary Speed</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Spindle Rotary Speed</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">3200(r/min)</span></p></strong>
@@ -221,7 +228,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Cutting Height</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Cutting Height</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">100(mm)</span></p></strong>
@@ -230,16 +237,24 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Cutting Width</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Cutting Width</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">200(mm)</span></p></strong>
 							</div>
 							<div class="clearfix"></div>
-						</li>
+						</li>	
+					
+					
+					</ul>
+
+					
+
+					<ul class="list-group single" style="width: 30%;margin: 0px 13px;display: inline-block;vertical-align: top;padding-left: 10px;">
+						
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Cutting Length</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Cutting Length</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">450~3500(mm)</span></p></strong>
@@ -248,7 +263,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Overall Dimension</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Overall Dimension</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">4000*1120*1450(mm)</span></p></strong>
@@ -257,7 +272,7 @@
 						</li>
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<div class="col-md-6 col-sm-6 part" style="">
-								<strong><p style="font-size: 15px; text-align: center;">Weight</p></strong>
+								<strong><p style="font-size: 15px; text-align: left;">Weight</p></strong>
 							</div>
 							<div class="col-md-6 col-sm-6 condition">
 								<strong><p style="font-size: 15px; text-align: left;"><span class="badge badge-primary badge-pill">1000(kg)</span></p></strong>
@@ -265,7 +280,12 @@
 							<div class="clearfix"></div>
 						</li>
 					</ul>
-
+						
+					
+					</div>
+					
+					
+					
 
 				</div>
 			</div>
