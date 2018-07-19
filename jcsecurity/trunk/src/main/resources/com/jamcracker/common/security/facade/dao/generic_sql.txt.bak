@@ -1,0 +1,143 @@
+getRole_privileges = SELECT P.NAME, P.PRIVILEGE_ID, P.DESCRIPTION, P.CODE, P.CREATION_DATE, P.UPDATE_DATE, P.CREATED_BY, P.UPDATED_BY FROM JCP_PRIVILEGE_VL P, JCP_ROLE_PRIVILEGE RP,JCP_ORG_PRIVILEGE_INSTANCE OP,JCP_ORG_ROLE_INSTANCE ORT WHERE RP.ROLE_ID = ? AND P.PRIVILEGE_ID=RP.PRIVILEGE_ID AND RP.STATUS = 'A' AND P.LANGUAGE_CODE = ? AND OP.STATUS = 'Y' AND OP.PRIVILEGE_ID = P.PRIVILEGE_ID AND ORT.ROLE_ID = RP.ROLE_ID AND  ORT.ACTOR_ID = (SELECT ACTOR_ID FROM JCP_ORG_ROLE_INSTANCE WHERE ROLE_ID = ?) AND ORT.ACTOR_ID = OP.ACTOR_ID
+
+
+
+getRole_details = SELECT R.ROLE_NAME, R.DESCRIPTION,R.ROLE_CODE FROM JCP_ROLE_VL R WHERE ROLE_ID=? AND LANGUAGE_CODE = ?
+
+
+
+getRole = SELECT B.ROLE_TYPE, B.STATUS, B.START_ACTIVE_DATE, B.CREATION_DATE, B.UPDATE_DATE, B.CREATED_BY, B.UPDATED_BY FROM JCP_ROLE_B B WHERE B.ROLE_ID = ?
+
+
+
+getAll_Permissions = SELECT PRINCIPALNAME, RESOURCETYPENAME, RESOURCEPERMISSIONCLASS, RESOURCENAME, RESOURCEACTION,DYNAMICPERMISSIONCLASS FROM JCP_PRIVILEGE_PERMISSION_VL WHERE PRINCIPALID > ?
+
+
+
+get_Permissions = SELECT A.PRINCIPALNAME, A.RESOURCETYPENAME, A.RESOURCEPERMISSIONCLASS, A.RESOURCENAME, A.RESOURCEACTION, C.DYNAMIC_PERM_CLASS_NAME, A.PRINCIPALID FROM JCP_PRIVILEGE_PERMISSION_VL A,JCP_RESOURCEACTION C WHERE A.RESOURCEID = C.RESOURCES_ID AND A.SERVICE_ID IN(1,2) AND A.LANGUAGE_CODE = ? ORDER BY  A.PRINCIPALID
+
+
+
+
+get_all_menus = SELECT DISTINCT MTL.MENU_ID,MTL.MENU_NAME,MTL.URL_LINK,M.PARENT_MENU_ID,R.RESOURCES_NAME FROM JCP_RESOURCE R, JCP_MENU_B M ,JCP_MENU_TL MTL WHERE M.MENU_ID= MTL.MENU_ID AND R.RESOURCES_ID = M.MENU_ID ORDER BY MTL.MENU_ID
+
+
+
+getRoleId = SELECT A.ROLE_ID, B.ROLE_NAME,B.ROLE_CODE FROM JCP_ACTOR_ROLES_MAPS A,JCP_ROLE_VL B WHERE A.ACTOR_ID = ? AND A.SERVICE_ID = ? AND A.STATUS = ?  AND B.ROLE_ID = A.ROLE_ID AND B.LANGUAGE_CODE = ? 
+
+
+
+getProxyRoleId = SELECT A.ROLE_ID, B.ROLE_NAME,B.ROLE_CODE FROM JCP_ORG_ROLE_INSTANCE A,JCP_ROLE_VL B WHERE A.ACTOR_ID = ? AND A.IS_PROXY = 'Y' AND B.ROLE_ID = A.ROLE_ID AND B.LANGUAGE_CODE = ? 
+
+
+
+getGuestRoleId = SELECT A.ROLE_ID, B.ROLE_NAME,B.ROLE_CODE FROM JCP_ORG_ROLE_INSTANCE A,JCP_ROLE_VL B WHERE A.ACTOR_ID = ? AND A.IS_GUEST = 'Y' AND B.ROLE_ID = A.ROLE_ID AND B.LANGUAGE_CODE = ?
+
+
+
+getInstanceRoles=SELECT I.ROLE_ID FROM JCP_INSTANCE_ROLE_MAP I, JCP_SUBSCRIPTION_LICENSE_DTL LIC_DTLS WHERE I.USER_ID = ? AND  I.INSTANCE_ID =LIC_DTLS.LICENSE_DTL_ID  AND I.STATUS != 'D' AND LIC_DTLS.LICENSE_DTL_ID= ?
+
+
+
+get_instance_Permissions = SELECT A.PRINCIPALNAME, A.RESOURCETYPENAME, A.RESOURCEPERMISSIONCLASS, A.RESOURCENAME, A.RESOURCEACTION, A.DYNAMICPERMISSIONCLASS, A.PRINCIPALID FROM JCP_PRIVILEGE_PERMISSION_VL A WHERE A.SERVICE_ID = 2 AND A.LANGUAGE_CODE = ?
+
+
+
+getEntityPermission = SELECT ROLE_ID,ENTITY_ID,ENTITY_TYPE,STATUS FROM JCP_ROLE_ENTITY_MAPPING WHERE ROLE_ID=? AND ENTITY_ID IN (?) AND ENTITY_TYPE='O' AND STATUS='A'
+
+
+
+getLoginModuleType=select a.login_module_class from jcp_jaas_login_module a,JCP_JAAS_LOGIN_MODULE_ENTRY b,jcp_dstore c where b.organization_id =? and a.login_module_id= b.login_module_id and b.organization_id=c.organization_id and b.status='A'
+
+
+.view.my.service.deleteservice=select count(1) from jcp_company_info_vl co,(select co1.actor_id,co1.parent_syndicator_id from jcp_service_vl s, jcp_company_info_vl  co1 where s.org_id=co1.actor_id and s.service_id=?) sc where co.actor_id in (sc.actor_id, sc.parent_syndicator_id) and co.actor_id=?
+.view.jsdn.myservice.showeditservice=SELECT COUNT(1) FROM jcp_company_info_vl co,(SELECT co1.actor_id,co1.parent_syndicator_id FROM jcp_service_vl s,jcp_company_info_vl co1  WHERE s.service_id=?  AND s.org_id=? AND s.org_id =co1.actor_id) sc WHERE co.actor_id IN (sc.actor_id, sc.parent_syndicator_id) AND co.actor_id=?
+.view.jsdn.company.edituser=select count(1) from (select co.actor_id,co.parent_syndicator_id from jcp_person_vl p,jcp_company_info_vl co where p.actor_id=? and p.organization_id=co.actor_id) pc,jcp_company_info_vl co1 where co1.actor_id in(pc.actor_id,pc.parent_syndicator_id) and co1.actor_id=?
+/jsdn/company/changeUserStatus.do=select count(1) from (select co.actor_id,co.parent_syndicator_id from jcp_person_vl p,jcp_company_info_vl co where p.actor_id=? and p.organization_id=co.actor_id) pc,jcp_company_info_vl co1 where co1.actor_id in(pc.actor_id,pc.parent_syndicator_id) and co1.actor_id=?
+/jsdn/company/deleteUser.do=select count(1) from (select co.actor_id,co.parent_syndicator_id from jcp_person_vl p,jcp_company_info_vl co where p.actor_id=? and p.organization_id=co.actor_id) pc,jcp_company_info_vl co1 where co1.actor_id in(pc.actor_id,pc.parent_syndicator_id) and co1.actor_id=?
+.view.helpdesk.case.view= select count(1) from jcp_sup_case s, jcp_person_vl p where s.case_number=? and p.organization_id=? and s.created_by=p.actor_id
+.view.helpdesk.cases.mycases.prereopen= select count(1) from jcp_sup_case s, jcp_person_vl p where s.case_number=? and p.organization_id=? and s.created_by=p.actor_id
+.view.helpdesk.cases.closedcase.prereopen= select count(1) from jcp_sup_case s, jcp_person_vl p where s.case_number=? and p.organization_id=? and s.created_by=p.actor_id
+.view.jsdn.administration.home.edit.approveresellerdetails= select count(1) from jcp_company_info_vl where organization_short_name=? and parent_syndicator_id=?
+/jsdn/order/orderDetails.action	= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId,o1.actor_id AS storeId,o2.actor_id AS mktID,deal.dealer_id AS dealer_id FROM jcp_sc_ordr ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 LEFT OUTER JOIN jcp_dealer_customer_link deal ON o3.actor_id =deal.customer_id WHERE ord.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.sc_ordr_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID, parents.dealer_id) AND  actor_id =? 
+/jsdn/order/confirmOrder.action	= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_sc_ordr ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.sc_ordr_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/order/deleteOrder.action	= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_sc_ordr ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.sc_ordr_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/settings/suspendRole.action= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_org_role_instance ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.role_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/settings/roleDetails.action= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_org_role_instance ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.role_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/settings/activateRole.action= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_org_role_instance ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.role_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/administration/publishOrDraftOrg.do= select count(1) from JCP_ACTOR_LANG_CONTENT_VL j WHERE j.content_id=? and j.actor_id = ?
+/jsdn/administration/deleteOrgContent.do= select count(1) from JCP_ACTOR_LANG_CONTENT_VL j WHERE j.content_id=? and j.actor_id = ?
+/jsdn/marketplace/showServiceinfo.do=select count(1) from (select org_id from jcp_Service_vl  where service_id=?) s,(select actor_id,parent_syndicator_id from jcp_company_info_vl where actor_id=?) co where s.org_id in(co.actor_id,co.parent_syndicator_id)
+.view.jsdn.administration.home.approvecompanydetails= select count(1) from jcp_person_vl p,jcp_company_info_vl o where p.organization_id=? and o.organization_short_name =? and  p.organization_id=o.actor_id and o.parent_syndicator_id=?
+/jsdn/administration/deleteCompany.do= select count(1) from jcp_person_vl p,jcp_company_info_vl o where p.organization_id=? and o.organization_short_name =? and  p.organization_id=o.actor_id and o.parent_syndicator_id=?
+.view.jsdn.administration.home.approveservicedetails=select count(1) from jcp_company_info_vl v,(select owner_company_id,org_id  from jcp_Service_vl where service_id=?) s where v.actor_id in(s.owner_company_id,s.org_id) and v.actor_id=?
+/jsdn/store/dAdminProxy.do= select count(1) from jcp_company_info_vl where actor_id=? and parent_syndicator_id=? 
+/jsdn/administration/deleteHomeService.do= select count(1) from jcp_Service_vl svl where svl.service_id=? and svl.owner_company_id=? 
+.view.jsdn.marketplace.memberinformation.post= select count(1) from (select mp_id from jcp_organization  where actor_id=?) o,(select mp_id from jcp_organization  where actor_id=?) vl where vl.mp_id=o.mp_id
+.view.jsdn.marketplace.memberinformation= select count(1) from (select org_id from jcp_Service_tl  where service_id=?) s,(select actor_id,parent_syndicator_id from jcp_company_info_vl where actor_id=?) co where s.org_id in(co.actor_id,co.parent_syndicator_id) 
+.view.jsdn.administration.home.approvecompanydetails.approve= select count(1) from jcp_person_vl p,jcp_company_info_vl o where p.organization_id=? and o.organization_short_name =? and  p.organization_id=o.actor_id and o.parent_syndicator_id=?
+.view.jsdn.administration.mem.companyinfo= select count(1) from jcp_organization where actor_id = ? and organization_short_name =? and mp_id=?
+/jsdn/administration/suspendondemandprovider.do	= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+/jsdn/administration/activateondemandprovider.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? and status<> 'D'
+/jsdn/administration/deleteondemandprovider.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+.view.jsdn.administration.reseller.companyinfo= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+/jsdn/administration/suspendstore.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+/jsdn/administration/activatestore.do= select  (1)  from jcp_company_info_vl where  actor_id = ? and  status <> 'D' and organization_short_name =? and parent_syndicator_id=?
+/jsdn/administration/deletestore.do	= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+/jsdn/administration/suspenddealer.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+.view.jsdn.administration.membermanagement.associatestoreinfopage= select count(1) from jcp_company_info_vl where actor_id=? and parent_syndicator_id=?
+/jsdn/administration/deletedealer.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? 
+.view.jsdn.administration.guestmem.companyinfo= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=?
+/jsdn/administration/suspendmember.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=?
+/jsdn/administration/deletemember.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=?
+/jsdn/settings/deleteRole.action= SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_org_role_instance ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.role_id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/settings/viewCatalog.action=SELECT COUNT(1) FROM jcp_company_info_vl o ,(SELECT o3.actor_id AS custId,o1.actor_id AS storeId,o2.actor_id AS mktID FROM jcp_company_info_vl o,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3,JCP_ORGANIZATION_NODE n  WHERE o.actor_id=o3.actor_id  AND o1.actor_id =o3.parent_syndicator_id  AND o2.actor_id =o1.parent_syndicator_id  AND o.actor_id  = n.organization_id AND n.organization_node_id=? AND n.department_name =?) parents WHERE o.actor_id IN(parents.custId ,parents.storeId, parents.mktID) AND o.actor_id=?
+/jsdn/company/updateUser.do	= select count(1) from (select co.actor_id,co.parent_syndicator_id from jcp_person_vl p INNER JOIN jcp_company_info_vl co ON p.organization_id=co.actor_id where p.actor_id=? ) pc INNER JOIN jcp_company_info_vl co1 ON co1.actor_id in(pc.actor_id,pc.parent_syndicator_id) and co1.actor_id=?
+/jsdn/customizeOffer/deleteSecurityGroup.action	= select count(1) from jcp_security_group g , jcp_localetext_entity_texts t  where  t.locale_text=?  and t.locale_text_id=g.SECGRPNAME_LOCALE_TEXT_ID and  g.tenant_id=(select organization_name from jcp_company_info_vl where actor_id=?)
+/jsdn/customizeOffer/editSecurityGroupDetails.action= select count(1) from jcp_security_group g , jcp_localetext_entity_texts t     where  g.SECURITYGROUP_ID=?  and t.locale_text_id=g.SECGRPNAME_LOCALE_TEXT_ID  and g.tenant_id=(select organization_name from jcp_company_info_vl where actor_id=?)
+.view.jsdn.administration.membermanagement.edituser= SELECT COUNT(1) FROM jcp_company_info_vl o1,(SELECT o.parent_syndicator_id AS parentId, o.actor_id AS actorId FROM jcp_person_vl p, jcp_company_info_vl o  WHERE p.actor_id=?  AND p.organization_id =o.actor_id ) o2 WHERE o1.actor_id IN (o2.parentId,o2.actorId) AND o1.actor_id  =?
+# /jsdn/login/doLogin1.action	= select count(1) from jcp_company_info_vl where actor_id=? and catalog_syndicator_id=?
+.view.jsdn.administration.membermanagement.showusers= select count(1) from jcp_person_vl p,jcp_organization o where p.organization_id=? and p.organization_id=o.actor_id and o.mp_id = ?
+.view.jsdn.administration.manageservices= select count(1) from jcp_person_vl p,jcp_organization o where p.organization_id=? and p.organization_id=o.actor_id and o.mp_id = ?
+/jsdn/store/dAdminProxy.do	= select count(1) from jcp_person_vl p,jcp_company_info_vl o where p.organization_id=? and p.organization_id=o.actor_id and o.parent_syndicator_id=?
+/jsdn/administration/updateStore.do	= select count(1) from jcp_dstore d, jcp_company_info_vl o where dstore_id=? and o.actor_id=d.organization_id and o.parent_syndicator_id=?
+.view.jsdn.administration.editpromotion	= select count(1) from jcp_company_info_vl o1,(select o.parent_syndicator_id as parentId,o.actor_id as actorId from JCP_PROMOTIONS_VL p, jcp_company_info_vl o where p.promotion_id=? and p.actor_id=o.actor_id ) o2 where o1.actor_id in (o2.parentId,o2.actorId) and o1.actor_id=?
+.view.jsdn.administration.viewpromotion	= select count(1) from jcp_company_info_vl o1,(select o.parent_syndicator_id as parentId,o.actor_id as actorId from JCP_PROMOTIONS_VL p, jcp_company_info_vl o where p.promotion_id=? and p.actor_id=o.actor_id ) o2 where o1.actor_id in (o2.parentId,o2.actorId) and o1.actor_id=?
+.view.jsdn.administration.listSelectedStoresForPromotion= select count(1) from jcp_company_info_vl o1,(select o.parent_syndicator_id as parentId,o.actor_id as actorId from JCP_PROMOTIONS_VL p, jcp_company_info_vl o where p.promotion_id=? and p.actor_id=o.actor_id ) o2 where o1.actor_id in (o2.parentId,o2.actorId) and o1.actor_id=?
+.view.jsdn.administration.listSelectedServiceOffersForPromotion	= select count(1) from jcp_company_info_vl o1,(select o.parent_syndicator_id as parentId,o.actor_id as actorId from JCP_PROMOTIONS_VL p, jcp_company_info_vl o where p.promotion_id=? and p.actor_id=o.actor_id ) o2 where o1.actor_id in (o2.parentId,o2.actorId) and o1.actor_id=?
+/jsdn/users/saveProfileDetails.action=SELECT COUNT(1) FROM jcp_company_info_vl vl, (SELECT o3.actor_id AS custId, o1.actor_id AS storeId,o2.actor_id AS mktID, deal.dealer_id AS dealer_id  FROM jcp_person_vl p,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 left outer join jcp_dealer_customer_link deal on o3.actor_id = deal.customer_id   WHERE p.organization_id=o3.actor_id  AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id =?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID, parents.dealer_id)  AND vl.actor_id=? 
+/jsdn/users/getprofileDetails.action=SELECT COUNT(1) FROM jcp_company_info_vl vl, (SELECT o3.actor_id AS custId, o1.actor_id AS storeId,o2.actor_id AS mktID, deal.dealer_id AS dealer_id  FROM jcp_person_vl p,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 left outer join jcp_dealer_customer_link deal on o3.actor_id = deal.customer_id   WHERE p.organization_id=o3.actor_id  AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id =?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID, parents.dealer_id) AND vl.actor_id=?
+/jsdn/users/resetPassword.action=SELECT COUNT(1) FROM jcp_company_info_vl vl, (SELECT o3.actor_id AS custId, o1.actor_id AS storeId,o2.actor_id AS mktID, deal.dealer_id AS dealer_id  FROM jcp_person_vl p,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 left outer join jcp_dealer_customer_link deal on o3.actor_id = deal.customer_id   WHERE p.organization_id=o3.actor_id  AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id =?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID, parents.dealer_id) AND vl.actor_id=?
+/jsdn/users/deleteUsers.action=SELECT COUNT(1) FROM jcp_company_info_vl vl, (SELECT o3.actor_id AS custId, o1.actor_id AS storeId,o2.actor_id AS mktID, deal.dealer_id AS dealer_id  FROM jcp_person_vl p,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 left outer join jcp_dealer_customer_link deal on o3.actor_id = deal.customer_id   WHERE p.organization_id=o3.actor_id  AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id =?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID, parents.dealer_id) AND vl.actor_id=?
+/jsdn/users/manageSubscriptions.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/administration/activatedealer.do= select count(1) from jcp_company_info_vl where  actor_id = ? and organization_short_name =? and parent_syndicator_id=? and status <> 'D'
+/jsdn/administration/associatestore.do= select count(1) from jcp_company_info_vl where organization_short_name = ? and parent_syndicator_id=?
+.view.jsdn.administration.updatepromotion=select count(1) from jcp_company_info_vl o1,(select o.parent_syndicator_id as parentId,o.actor_id as actorId from JCP_PROMOTIONS_VL p, jcp_company_info_vl o where p.promotion_id=? and p.actor_id=o.actor_id ) o2 where o1.actor_id in (o2.parentId,o2.actorId) and o1.actor_id=?
+/jsdn/store/viewpromotion.do=select count(1) from jcp_company_info_vl v,(select co.actor_id,co.parent_syndicator_id from jcp_promotions_vl p,jcp_company_info_vl co where p.promotion_id=? and p.actor_id=co.actor_id) s where v.actor_id in(s.actor_id,s.parent_syndicator_id) and v.actor_id=?
+.view.jsdn.storemanagement.editpromotions=select count(1) from jcp_promotions_vl p  where p.promotion_id=? and p.actor_id=?
+.view.jsdn.storemanagement.updatepromotion=select count(1) from jcp_promotions_vl p  where p.promotion_id=? and p.actor_id=?
+.view.jsdn.storemanagement.managepromotions=select count(1) from jcp_promotions_vl p  where p.promotion_id=? and p.actor_id=?
+/jsdn/administration/approveStore.do=select count(1) from jcp_company_info_vl  where actor_id in(%BULK%) and parent_syndicator_id in(?,1000)
+/jsdn/services/checkServiceHasRestrictResell.do=select count(1) from jcp_service_b where service_ID in(%BULK%) and owner_company_id=?
+/jsdn/administration/approvecompany.do=select count(1) from jcp_company_info_vl  where actor_id in(%BULK%) and parent_syndicator_id in(?,1000)
+.view.jsdn.administration.editassociatepromotiontostore=select count(1) from  jcp_company_info_vl where actor_id  IN(%BULK%) AND parent_syndicator_id=?
+/jsdn/term/deleteTerm.do=select count(1) from jcp_term t, jcp_organization o  where t.term_id=? and t.actor_id=o.actor_id and o.actor_id=?
+.view.jsdn.company.deleteRoleAtMkt=select count(1) from jcp_role_tl r, jcp_person p  where r.role_id=? and r.created_by=p.actor_id and p.organization_id=?
+/jsdn/company/listAssignRoleAtMkt.do=SELECT COUNT(1)FROM jcp_company_info_vl o1,(SELECT o.parent_syndicator_id AS parentId,o.actor_id AS actorId FROM jcp_org_role_instance r,jcp_company_info_vl o WHERE r.role_id=? AND r.actor_id =o.actor_id) o2 WHERE o1.actor_id IN (o2.parentId,o2.actorId)AND o1.actor_id =?
+/jsdn/company/assignRoleForActorAtMkt.do=select count(1) from jcp_person where actor_id in(%BULK%) and organization_id=?
+/jsdn/orchestrationTemplate/launchDesignerConsole.action=select count(1) from jco_orchestration_template j,jcp_company_info_vl c where j.template_id=? and j.organization_id=c.actor_id  and c.actor_id=?
+.view.jsdn.createorchetemplates.catalogpublish=select count(1) from jco_orchestration_template j,jcp_company_info_vl c where j.template_id=? and j.organization_id=c.actor_id  and c.actor_id=?
+/jsdn/orchestration/deleteTemplate.do=select count(1) from jco_orchestration_template j,jcp_company_info_vl c where j.template_id=? and j.organization_id=c.actor_id  and c.actor_id=?
+/jsdn/orchestration/updateOrcheTemplate.do=select count(1) from jco_orchestration_template j,jcp_company_info_vl c where j.template_id=? and j.organization_id=c.actor_id  and c.actor_id=?
+/jsdn/orchestrationTemplate/viewStackDetails.action=SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jco_stack ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/appStack/terminateStack.action=SELECT COUNT(1) FROM jcp_company_info_vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jco_stack ord,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE ord.actor_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND ord.id =?) parents WHERE actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =?
+/jsdn/iaasConsole/stopInstance.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_server instnce,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=instnce.created_by AND instnce.server_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =? 
+/jsdn/iaasConsole/terminateInstance.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_server instnce,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=instnce.created_by AND instnce.server_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =? 
+/jsdn/iaasConsole/rebootInstance.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_server instnce,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=instnce.created_by AND instnce.server_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =? 
+/jsdn/iaasConsole/viewInstanceDetails.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_server instnce,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=instnce.created_by AND instnce.server_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =? 
+/jsdn/iaasConsole/openSSH.action=SELECT count(1) FROM jcp_company_info_vl vl,(SELECT o3.actor_id AS custId, o1.actor_id AS storeId, o2.actor_id AS mktID FROM jcp_person_vl p,jcp_server instnce,jcp_company_info_vl o1,jcp_company_info_vl o2,jcp_company_info_vl o3 WHERE p.organization_id=o3.actor_id AND o1.actor_id=o3.parent_syndicator_id AND o2.actor_id=o1.parent_syndicator_id AND p.actor_id=instnce.created_by AND instnce.server_id=?) parents WHERE vl.actor_id IN (parents.custId ,parents.storeId, parents.mktID) AND  actor_id =? 
+/jsdn/dealer/launchProxy.action=select count(1) from jcp_dealer_customer_link where customer_id=? and dealer_id=? 
+/jsdn/administration/saveUser.do=select count(1) from jcp_person_vl p,jcp_organization o where p.organization_id=? and p.organization_id=o.actor_id and o.mp_id = ?
+/jsdn/administration/saveUserAndNext.do=select count(1) from jcp_person_vl p,jcp_organization o where p.organization_id=? and p.organization_id=o.actor_id and o.mp_id = ?
+/jsdn/company/saveUser.do=select count(1) from jcp_org_role_instance  where role_id=%BULK% and actor_id=?
+/jsdn/company/saveAndNextUser.do=select count(1) from jcp_org_role_instance  where role_id=%BULK% and actor_id=?

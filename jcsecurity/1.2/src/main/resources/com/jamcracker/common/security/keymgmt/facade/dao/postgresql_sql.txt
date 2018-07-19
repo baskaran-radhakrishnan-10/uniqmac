@@ -1,0 +1,6 @@
+# Added by paddy for postgresql DB Migration
+
+GET_MISSING_KEY_ACTORS = (SELECT ORGANIZATION_ID FROM JCP_DSTORE DS) EXCEPT (select DISTINCT ACTOR_ID as ORGANIZATION_ID FROM JCP_CRYPTO_KEYS)
+GET_CHILD_ACTORS_WITH_PARENT = select org.actor_id, org.parent_syndicator_id from  jcp_organization org where actor_id != 1000 and parent_syndicator_id != 1000 and parent_syndicator_id not in (select o2.actor_id from  jcp_organization o2 where o2.parent_syndicator_id = 1000)
+GET_PARENT_FOR_CHILD = select org.parent_syndicator_id from  jcp_organization org where actor_id != 1000 and parent_syndicator_id != 1000 and parent_syndicator_id not in (select o2.actor_id from  jcp_organization o2 where o2.parent_syndicator_id = 1000) and actor_id=?
+SAVE_KEY = INSERT INTO JCP_CRYPTO_KEYS(CRYPTO_ID, ACTOR_ID, CRYPTO_TYPE,KEY_VALUE,STATUS) VALUES (NEXTVAL('JCP_CRYPTO_KEYS_S'),?,?,?,'A')

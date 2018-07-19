@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  			
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+	<bean id="SAMLManager" class="com.jamcracker.common.security.saml.impl.OpenAMImpl">
+		<property name="samlConfigFile">
+			<value>/saml/AMConfig.properties</value>
+		</property>
+		<property name="metadataTemplateFile">
+			<value>metadata.ftl</value>
+		</property>
+		<property name="metadataExtendedTemplateFile">
+			<value>extended-metadata.ftl</value>
+		</property>
+		<property name="certificateAlias">
+			<value>OpenAmCertificate</value>
+		</property>
+	</bean>
+
+	<!-- Spring bean for XSS validations <bean id="validatorApi" class="com.jamcracker.common.security.validator.impl.ValidatorImpl"> 
+		<property name="vulnerabalityPropertiesFile" value="/validator/validator.properties" 
+		/> <property name="vulnerabalityRuleFile" value="/validator/antisamy-1.4.1.xml" 
+		/> </bean> -->
+
+	<!-- Spring SecurityAPI -->
+	<bean id="securityAPI" class="com.jamcracker.common.security.api.SecurityAPIImpl"
+		scope="prototype">
+		<property name="samlManager">
+			<ref bean="SAMLManager" />
+		</property>
+	</bean>
+	
+	<!-- Security DAO -->
+	<bean id="securityDAO" class="com.jamcracker.common.security.facade.dao.ISecurityDAO"
+		factory-bean="jcSecurityDAOFactory" factory-method="getSecurityDAO"
+		scope="prototype">
+		<property name="dataSource" ref="dataSource" />
+		<property name="moduleName" value="common/security" />
+		<property name="sqlManager" ref="iJCSQLManager" />
+	</bean>
+	<!-- DAO sample test with Module name end -->
+
+	<bean id="securityContextBean" class="com.jamcracker.common.security.util.SpringConfigLoader" />
+
+    <bean id="securitySchema" class="com.jamcracker.common.security.validator.dao.GenericSecuritySchemaDAO">
+		<property name="dataSource" ref="securitySchemaDS" />
+		<property name="moduleName" value="common/security" />
+		<property name="sqlManager" ref="iJCSQLManager" />
+	</bean>
+
+	<bean id="securitySchemaDS" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:/securityPool</value>
+		</property>
+		<property name="resourceRef">
+			<value>true</value>
+		</property>
+	</bean>
+	
+	<bean id="validationHelper" class="com.jamcracker.common.security.util.ValidationHelper">
+ 		<constructor-arg value="/validator/csrf.properties" /> 
+ 		<constructor-arg value="/validator/csrfUIWhitelistedUrls.properties" /> 
+ 		<constructor-arg value="/validator/security_framework.properties" /> 
+ 		<constructor-arg value="/validator/antisamy-1.4.1.xml" />
+ 		<constructor-arg value="/validator/xss.properties" />
+ 		<constructor-arg value="/validator/BrokenAutherizationURLs.properties" />
+ 		<property name="validatonJSONHelper" ref="validatonJSONHelper" />
+	</bean>
+
+    <bean id="validatonJSONHelper" class="com.jamcracker.common.security.util.ValidationBIOHelper" />
+
+	<bean id="validationObserver" class="com.jamcracker.common.security.validator.impl.ValidationObserver" scope="prototype">
+		<property name="validationHelper" ref="validationHelper"/>
+	</bean>
+
+	
+	<bean id="nullCheckWrapper" class="com.jamcracker.common.security.wrapper.NullCheckWrapper" />
+	
+	<bean id="regxPatternValidator" class="com.jamcracker.common.security.wrapper.RegxPatternValidator" />
+	
+	<bean id="bioEmailValidator" class="com.jamcracker.common.security.wrapper.EmailValidateWrapper" />
+	
+	<bean id="validatorEngine" class="com.jamcracker.common.security.validator.BIOValidatorImpl"/>
+	
+	<bean id="timezoneValidateWrapper" class="com.jamcracker.common.security.wrapper.TimezoneValidateWrapper">
+		<property name="timezoneValidate" ref="timezoneValidate" />
+	</bean>
+	<bean id="timezoneValidate" class="com.jamcracker.common.security.wrapper.TimezoneValidate" /> 
+	
+	<bean id="doublevalidatorWrapper" class="com.jamcracker.common.security.wrapper.DoublevalidatorWrapper" >
+		<property name="doubleValidator" ref="doubleValidator"/>
+	</bean>
+	<bean name ="doubleValidator" class="org.apache.commons.validator.routines.DoubleValidator"/>
+	
+	<bean id="floatValidatorWrapper" class="com.jamcracker.common.security.wrapper.FloatValidatorWrapper" >
+		<property name="floatValidator" ref="floatValidator"/>
+	</bean>
+	<bean name ="floatValidator" class="org.apache.commons.validator.routines.FloatValidator"/>
+	
+	<bean id="inetAdressValidateWrapper" class="com.jamcracker.common.security.wrapper.InetAdressValidateWrapper" >
+		<property name="inetAddressValidator" ref="inetAddressValidator"/>
+	</bean>
+	<bean name ="inetAddressValidator" class="org.apache.commons.validator.routines.InetAddressValidator"/>
+	
+	<bean id="integerValidateWrapper" class="com.jamcracker.common.security.wrapper.IntegerValidateWrapper" >
+		<property name="integerValidator" ref="integerValidator"/>
+	</bean>
+	<bean name ="integerValidator" class="org.apache.commons.validator.routines.IntegerValidator"/>
+	
+	<bean id="longValidatorWrapper" class="com.jamcracker.common.security.wrapper.LongValidatorWrapper" >
+		<property name="longValidator" ref="longValidator"/>
+	</bean>
+	<bean name ="longValidator" class="org.apache.commons.validator.routines.LongValidator"/>
+	
+	<bean id="urlValidateWrapper" class="com.jamcracker.common.security.wrapper.URLValidateWrapper">
+		<property name="urlValidator" ref="urlValidator"/>
+	</bean>
+	<bean id="urlValidator" class="org.apache.commons.validator.routines.UrlValidator" />
+	
+	<bean id="dateValidatorWrapper" class="com.jamcracker.common.security.wrapper.DateValidateWrapper">
+		<property name="dateValidator" ref="dateValidator"/>
+	</bean>
+	<bean id="dateValidator" class="org.apache.commons.validator.routines.DateValidator" />
+	
+	<bean id="ageValidateWrapper" class="com.jamcracker.common.security.wrapper.AgeValidateWrapper">
+		<property name="integerValidator" ref="integerValidator"/>
+	</bean>
+	
+	<bean id="booleanCheckValidateWrapperWrapper" class="com.jamcracker.common.security.wrapper.BooleanCheckValidateWrapper">
+		<property name="booleanCheckValidator" ref="booleanCheckValidator" />
+	</bean>
+	<bean id="booleanCheckValidator" class="com.jamcracker.common.security.wrapper.BooleanCheckValidator" />
+		
+	<!-- Spring JSDNSessionHandlerImpl -->
+	<bean id="sessionHandler" class="com.jamcracker.common.security.JSDNSessionHandlerImpl"
+		scope="prototype" />
+
+	<!-- Spring JAASSecurityProvider -->
+	<!-- <bean id="securityProvider" class="com.jamcracker.common.security.impl.jaas.JAASSecurityProvider" 
+		scope="prototype"> <property name="sessionHandler" ref="sessionHandler" /> 
+		</bean> -->
+	<bean id="securityProvider"
+		class="com.jamcracker.common.security.impl.jaas.SecurityProviderImpl"
+		scope="prototype">
+		<property name="sessionHandler" ref="sessionHandler" />
+	</bean>
+
+	<!-- Spring SecurityDAOFactory -->
+	<bean id="jcSecurityDAOFactory"
+		class="com.jamcracker.common.security.facade.dao.ISecurityFactory"
+		factory-bean="daoFactory" factory-method="getDAOFactory">
+		<constructor-arg
+			value="com.jamcracker.common.security.facade.dao.SecurityDAOFactory" />
+	</bean>
+
+	
+</beans>
+
+

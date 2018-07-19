@@ -1,0 +1,3 @@
+Created patch branch based on the //jaws/jc-commons/jcsecurity/1.0.1@2013/08/30
+
+Bug iD:40048

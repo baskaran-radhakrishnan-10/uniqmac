@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<!--
+		- Application context definition for RBAC business layer.
+	-->
+	<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:context="http://www.springframework.org/schema/context" 
+		xmlns:tx="http://www.springframework.org/schema/tx" 
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  			
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="iCryptor" class="com.jamcracker.common.security.crypto.core.JCCryptor" >
+	</bean>
+	
+	<bean id="cryptoAPI" class="com.jamcracker.common.security.crypto.impl.JCCryptoAPIImpl" scope="prototype">
+		<property name = "cryptor">    
+            <ref bean = "iCryptor"/>
+        </property> 
+	</bean>
+	
+	
+	<bean id="keyManager" class="com.jamcracker.common.security.keymgmt.api.KeyManagerImpl" scope="prototype">
+		<property name="keyMgmtDao" ref="keyMgmtDao" />
+		<property name="cryptoAPI" ref="cryptoAPI" />
+	</bean>
+	
+	<bean id="keyMgmtDao" class="com.jamcracker.common.security.keymgmt.dao.GenericKeyMgmtDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="moduleName" value="common/security/keymgmt" />
+		<property name="sqlManager" ref="iJCSQLManager" />
+	</bean> 
+	
+	<!--
+		the test application context definition for the jdbc based tests
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+-->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:/wlpiPool</value>
+		</property>
+		<property name="resourceRef">
+			<value>true</value>
+		</property>
+	<!--	<property name="defaultObject" ref="developmentDataSource" />-->
+	</bean>
+<!--	<bean id="developmentDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>-->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- JCSQLManagerFactory -->
+	<bean id="sqlManagerFactory" class="com.jamcracker.common.sql.JCSQLManagerFactory">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- SQL manager Factory injection -->
+	<bean id="iJCSQLManager" class="com.jamcracker.common.sql.IJCSQLManager"
+		factory-bean="sqlManagerFactory" factory-method="getSQLManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  			
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+	<bean id="SAMLManager" class="com.jamcracker.common.security.saml.impl.OpenAMImpl">
+		<property name="samlConfigFile">
+			<value>/saml/AMConfig.properties</value>
+		</property>
+		<property name="metadataTemplateFile">
+			<value>metadata.ftl</value>
+		</property>
+		<property name="metadataExtendedTemplateFile">
+			<value>extended-metadata.ftl</value>
+		</property>
+		<property name="certificateAlias">
+			<value>OpenAmCertificate</value>
+		</property>
+	</bean>
+
+	<!-- Spring bean for XSS validations <bean id="validatorApi" class="com.jamcracker.common.security.validator.impl.ValidatorImpl"> 
+		<property name="vulnerabalityPropertiesFile" value="/validator/validator.properties" 
+		/> <property name="vulnerabalityRuleFile" value="/validator/antisamy-1.4.1.xml" 
+		/> </bean> -->
+
+	<!-- Spring SecurityAPI -->
+	<bean id="securityAPI" class="com.jamcracker.common.security.api.SecurityAPIImpl"
+		scope="prototype">
+		<property name="samlManager">
+			<ref bean="SAMLManager" />
+		</property>
+		<property name="vulnerabalityValidator">
+			<ref bean="validatorApi" />
+		</property>
+
+
+
+	</bean>
+	<bean id="validatorApi"
+		class="com.jamcracker.common.security.validator.impl.ValidatorImpl">
+		<constructor-arg value="/validator/validator.properties" />
+		<constructor-arg value="/validator/antisamy-1.4.1.xml" />
+		<constructor-arg value="/validator/BrokenAutherizationURLs.properties" />
+	</bean>
+
+
+
+	<!-- Spring JSDNSessionHandlerImpl -->
+	<bean id="sessionHandler" class="com.jamcracker.common.security.JSDNSessionHandlerImpl"
+		scope="prototype" />
+
+	<!-- Spring JAASSecurityProvider -->
+	<!-- <bean id="securityProvider" class="com.jamcracker.common.security.impl.jaas.JAASSecurityProvider" 
+		scope="prototype"> <property name="sessionHandler" ref="sessionHandler" /> 
+		</bean> -->
+	<bean id="securityProvider"
+		class="com.jamcracker.common.security.impl.jaas.SecurityProviderImpl"
+		scope="prototype">
+		<property name="sessionHandler" ref="sessionHandler" />
+	</bean>
+
+	<!-- Spring SecurityDAOFactory -->
+	<bean id="jcSecurityDAOFactory"
+		class="com.jamcracker.common.security.facade.dao.ISecurityFactory"
+		factory-bean="daoFactory" factory-method="getDAOFactory">
+		<constructor-arg
+			value="com.jamcracker.common.security.facade.dao.SecurityDAOFactory" />
+	</bean>
+
+
+
+
+	<!-- Security DAO -->
+	<bean id="securityDAO" class="com.jamcracker.common.security.facade.dao.ISecurityDAO"
+		factory-bean="jcSecurityDAOFactory" factory-method="getSecurityDAO"
+		scope="prototype">
+		<property name="dataSource" ref="dataSource" />
+		<property name="moduleName" value="common/security" />
+		<property name="sqlManager" ref="iJCSQLManager" />
+	</bean>
+	<!-- DAO sample test with Module name end -->
+
+	<bean id="securityContextBean" class="com.jamcracker.common.security.util.SpringConfigLoader" />
+</beans>
